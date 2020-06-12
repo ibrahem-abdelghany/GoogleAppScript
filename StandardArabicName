@@ -1,0 +1,96 @@
+function onEdit(e) {
+
+  var sheet = e.source.getActiveSheet();
+  var Range = e.range;
+  
+//++++++++++++++++++++++++++++++
+
+  if (sheet.getName() !== 'DataSet') return; //So it won't be applied on any sheet except dataset
+  
+  if (Range.getRow() == '1') return; //So it won't be applied on headers
+  
+  var NameColNo  = 2 ; //
+
+//++++++++++++++++++++++++++++++++++
+  var EditedCellValue = e.value;
+  var ColumnOfCellEdited = Range.getColumn();
+  var RowofCellEdited = Range.getRow();
+  
+  //Getting the data for needed repairs
+  var data = Range.getValues();
+  var newData = new Array();  
+  var ageData = new Array();
+
+
+  
+  if (ColumnOfCellEdited === NameColNo) { 
+                    
+    for(i in data){
+      var row = data[i];
+      var rplcit = RegexName(row);
+      newData.push([rplcit]);                        
+    }
+    
+    Range.setValues(newData);
+    
+    for(i in newData){
+       var row = newData[i];
+       ChkDuplicates (row,NameColNo,sheet,RowofCellEdited);
+    }  
+  }
+  
+  function RegexName (row){
+  
+  var name = row.toString()
+  
+  //changing the following squence should be done with great CAUTIOUS
+  
+  .replace(/ي /g, "ى ")    
+  .replace(/ي$/, "ى")
+  .replace(/ؤو/g,"ؤ")
+  .replace(/وو/g,"و")
+  .replace(/يي/g, "ي")
+  .replace(/أ/g, "ا")
+  .replace(/ة/g, "ه")
+  .replace(/إ/g, "ا")
+  .replace(/آ/g, "ا")
+  
+  
+  //some weird Alef charachters
+  .replace(/اّ/g, "ا")
+  .replace(/إ/g, "ا")
+  .replace(/أ/g, "ا")
+  .replace(/آ/g, "ا")
+  .replace(/اا/g, "ا")
+  
+  //now to replace prefixes & suffix
+  .replace(/ابو/g, "ابو ")
+  .replace(/عبد/g, "عبد ") //we made it with space after it for sake of saving "LAFZ AL GALALA" in names like "ضيف الله" not to become "ضيفالله", when replacing are "نصر الله" with "نصرالله"
+  .replace(/الدين/g, " الدين")
+  .replace(/الله/g, " الله")
+  .replace(/ ست/g, " ست ")
+  .replace(/جاد/g, "جاد ")
+  .replace(/عبد ه/g, "عبده")
+  .replace(/جاد و/g, "جادو")    
+  .replace(/نورا/g, "نوره")
+  .replace(/صمويل/g, "صموئيل")
+  .replace(/ميخاييل/g, "ميخائيل")
+  .replace(/باسنت/g, "بسنت")
+  .replace(/اسحاق/g, "اسحق")
+  
+  
+  //remove any unnecessary spaces , duplicate or single letters or non-arabic letters and digits
+  
+  .replace(/[^\u0621-\u064A\s]/g, "") //remove non arabic chars
+  .replace(/\s{2,}/g, " ") //remove any more than one space (at least 2 spaces to activate this line)
+  
+  //strip the line from any starting or ending spaces
+  
+  .replace(/ $/g, "")
+  .replace(/^ /g, "")
+  
+  return name;
+  
+  }
+
+  
