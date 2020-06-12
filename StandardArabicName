@@ -5,13 +5,14 @@ function onEdit(e) {
   
 //++++++++++++++++++++++++++++++
 
-  if (sheet.getName() !== 'DataSet') return; //So it won't be applied on any sheet except dataset
+  if (sheet.getName() !== 'DataSet') return; //Edit this to the name of the sheet, So it won't be applied on any sheet except DataSet
   
-  if (Range.getRow() == '1') return; //So it won't be applied on headers
+  if (Range.getRow() == '1') return;         //Repeat this line So it won't be applied on headers
   
-  var NameColNo  = 2 ; //
+  var NameColNo  = 2 ;                       //Edit this Number to the Number of column containing Arabic Names
 
 //++++++++++++++++++++++++++++++++++
+
   var EditedCellValue = e.value;
   var ColumnOfCellEdited = Range.getColumn();
   var RowofCellEdited = Range.getRow();
@@ -20,8 +21,6 @@ function onEdit(e) {
   var data = Range.getValues();
   var newData = new Array();  
   var ageData = new Array();
-
-
   
   if (ColumnOfCellEdited === NameColNo) { 
                     
@@ -31,12 +30,7 @@ function onEdit(e) {
       newData.push([rplcit]);                        
     }
     
-    Range.setValues(newData);
-    
-    for(i in newData){
-       var row = newData[i];
-       ChkDuplicates (row,NameColNo,sheet,RowofCellEdited);
-    }  
+    Range.setValues(newData); 
   }
   
   function RegexName (row){
@@ -91,6 +85,4 @@ function onEdit(e) {
   
   return name;
   
-  }
-
-  
+  }  
